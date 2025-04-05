@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">IArpg</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">IA RPG</string>
+    <string name="startButton">Jouer</string>
+    <string name="character_creation">Création du personnage</string>
+    <string name="character_create_instruction">Entrez un prompt décrivant votre personnage</string>
+    <string name="generate">Générer</string>
+    <string name="character_prompt_hint">Décrivez le personnage</string>
+</resources>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.WelcomeFragment"
+    android:gravity="center_horizontal">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="60dp"
+        android:background="#bbbbbb"
+        android:padding="30dp"
+        android:text="@string/character_creation"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:typeface="monospace" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/character_create_instruction"
+        android:padding="30dp"
+
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:minHeight="48dp"
+        android:hint="@string/character_prompt_hint"
+
+
+
+        />
+
+    <Button
+
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:paddingHorizontal="24dp"
+        android:textSize="14sp"
+        android:text="@string/generate"
+
+        />
+
+
+</LinearLayout>
