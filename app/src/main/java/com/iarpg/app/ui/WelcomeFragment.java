@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.iarpg.app.R;
+import com.iarpg.app.data.Utils;
 import com.iarpg.app.databinding.FragmentWelcomeBinding;
 
 /**
@@ -47,12 +48,13 @@ public class WelcomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentManager fragmentManager = getParentFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 CharacterFragment characterFragment = CharacterFragment.newInstance();
-                fragmentTransaction.add(R.id.fragment_container_view, characterFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+
+                Utils.fragmentTransition(fragmentManager, characterFragment);
             }
         });
     }
+
+
+
 }

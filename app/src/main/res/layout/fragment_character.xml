@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".ui.WelcomeFragment"
     android:gravity="center_horizontal">
 
@@ -16,10 +17,11 @@
         android:layout_margin="60dp"
         android:background="#bbbbbb"
         android:padding="30dp"
-        android:text="@string/character_creation"
+
         android:textSize="24sp"
         android:textStyle="bold"
-        android:typeface="monospace" />
+        android:typeface="monospace"
+        android:text="@string/character_creation"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,6 +32,7 @@
         />
 
     <EditText
+        android:id="@+id/characterPrompt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -43,13 +46,25 @@
 
     <Button
 
-        android:id="@+id/startButton"
+        android:id="@+id/generateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:paddingHorizontal="24dp"
         android:textSize="14sp"
         android:text="@string/generate"
+
+        />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:paddingHorizontal="24dp"
+        android:textSize="14sp"
+        android:text="@string/explore_the_dungeon"
+
 
         />
 

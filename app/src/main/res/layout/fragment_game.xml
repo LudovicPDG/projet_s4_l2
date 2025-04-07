@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".ui.WelcomeFragment"
+    android:gravity="center_horizontal">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/textZone"
+        android:layout_width="300dp"
+        android:layout_height="400dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="60dp"
+        android:background="#bbbbbb"
+        android:padding="30dp"
+
+        android:textSize="14sp"
+        android:typeface="monospace"
+        android:text="@string/lorem_ipsum"
+        android:gravity="top|start"
+        android:scrollbars="vertical"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="46dp">
+
+        <!-- Haut -->
+        <Button
+            android:id="@+id/upButton"
+            android:layout_marginStart="36dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="↑" />
+
+        <!-- Gauche/Droite côte à côte -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/leftButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:text="←" />
+
+            <Button
+                android:id="@+id/rightButton"
+                android:layout_marginStart="16dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:text="→" />
+        </LinearLayout>
+
+        <!-- Bas -->
+        <Button
+            android:id="@+id/downButton"
+            android:layout_marginStart="36dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="↓" />
+    </LinearLayout>
+
+
+    <!-- Boutons d'action -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="248dp"
+        android:layout_marginBottom="72dp"
+
+        >
+
+        <Button
+            android:id="@+id/actionButton1"
+            android:layout_width="106dp"
+            android:layout_height="60dp"
+            android:text="@string/action_1" />
+
+        <Button
+            android:id="@+id/actionButton2"
+            android:layout_width="106dp"
+            android:layout_height="60dp"
+            android:text="@string/action_2"
+            android:layout_marginTop="12dp" />
+    </LinearLayout>
+
+
+
+</FrameLayout>
