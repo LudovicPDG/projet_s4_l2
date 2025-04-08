@@ -7,19 +7,20 @@ import java.util.Map;
 
 public class Character {
     private String name;
-    private Map<String, Integer> characterStats;
+    private Map<String, Integer> stats;
     private List<Item> inventory;
     private String backstory;
-    private String image;
-    private Integer healthPoints;
+    private int healthPoints;
+
+    private String characterClass;
 
 
-    public Character(String name, Map<String, Integer> stats, String backstory, String image) {
+    public Character(String name, String characterClass, Map<String, Integer> stats, String backstory) {
         this.name = name;
-        this.characterStats = new HashMap<>(stats);
+        this.characterClass = characterClass;
+        this.stats = new HashMap<>(stats);
         this.inventory = new ArrayList<>();
         this.backstory = backstory;
-        this.image = image;
         this.healthPoints = 100; // par défaut
     }
 
@@ -32,25 +33,27 @@ public class Character {
     }
 
     public Integer checkStat(String statName) {
-        return characterStats.getOrDefault(statName, 0);
+        return stats.get(statName);
     }
 
-    public void modifyHealthPoints(Integer amount) {
+    public int modifyHealthPoints(Integer amount) {
         this.healthPoints += amount;
         if (this.healthPoints < 0) {
             this.healthPoints = 0; // Empêche les points de vie négatifs
         }
+
+        return this.healthPoints;
     }
 
-    public void modifyStat(String statName, Integer amount) {
-        if (characterStats.containsKey(statName)) {
-            characterStats.put(statName, characterStats.get(statName) + amount);
+    public void modifyStat(String statName, int amount) {
+        if (stats.containsKey(statName)) {
+            stats.put(statName, stats.get(statName) + amount);
         } else {
-            characterStats.put(statName, amount); // Ajoute la statistique si elle n'existe pas encore
+            stats.put(statName, amount); // Ajoute la statistique si elle n'existe pas encore
         }
 
-        if (characterStats.get(statName) < 0) {
-            characterStats.put(statName, 0);
+        if (stats.get(statName) < 0) {
+            stats.put(statName, 0);
         }
     }
 
@@ -62,12 +65,12 @@ public class Character {
         this.name = name;
     }
 
-    public Map<String, Integer> getCharacterStats() {
-        return characterStats;
+    public Map<String, Integer> getStats() {
+        return stats;
     }
 
-    public void setCharacterStats(Map<String, Integer> characterStats) {
-        this.characterStats = characterStats;
+    public void setStats(Map<String, Integer> stats) {
+        this.stats = stats;
     }
 
     public List<Item> getInventory() {
@@ -84,14 +87,6 @@ public class Character {
 
     public void setBackstory(String backstory) {
         this.backstory = backstory;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public Integer getHealthPoints() {

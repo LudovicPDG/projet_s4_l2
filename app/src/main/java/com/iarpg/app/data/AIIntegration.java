@@ -3,6 +3,10 @@ package com.iarpg.app.data;
 
 import android.util.JsonReader;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,7 +25,7 @@ public class AIIntegration {
         List<String> result = new ArrayList<>();
 
         // Construire l'URL avec le thème
-        URL url = new URL("http://localhost:8080/AIGenerator/generateRoomTitles?theme=" + theme);
+        URL url = new URL("http://10.0.2.2:8080/AIGenerator/generateRoomTitles?theme=" + theme);
 
         // Ouvrir la connexion HTTP
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -57,7 +61,7 @@ public class AIIntegration {
     public static Map<String, String> generateRoomDescription(String roomTitle, String previousRoomTitle, boolean finalRoom, String characterClass) throws IOException {
         Map<String, String> result = new HashMap<>();
 
-        URL url = new URL(String.format("http://localhost:8080/AIGenerator/" +
+        URL url = new URL(String.format("http://10.0.2.2:8080/AIGenerator/" +
                 "generateRoomDescription?roomTitle=%s&previousRoomTitle=%s&finalRoom=%s&characterClass=%s",
                 roomTitle, previousRoomTitle, finalRoom, characterClass));
 
@@ -104,5 +108,54 @@ public class AIIntegration {
 
         return result;
     }
+
+    public static String generateCharacterBackstory(String characterClass, String characterDescription, String theme) throws IOException, JSONException {
+        String result = "";
+
+        // Encoder les paramètres pour éviter les problèmes d'espaces ou de caractères spéciaux
+        String encodedClass = java.net.URLEncoder.encode(characterClass, java.nio.charset.StandardCharsets.UTF_8).replace("+", "%20");
+        String encodedDescription = java.net.URLEncoder.encode(characterDescription, java.nio.charset.StandardCharsets.UTF_8).replace("+", "%20");
+        String encodedTheme = java.net.URLEncoder.encode(theme, java.nio.charset.StandardCharsets.UTF_8).replace("+", "%20");
+
+        String urlStr = String.format("http://10.0.2.2:8080/AIGenerator/generateBackstory?characterClass=%s&description=%s&theme=%s",
+                encodedClass, encodedDescription, encodedTheme);
+
+        System.out.println("L'url est : " + urlStr);
+
+        // Faire une requête
+        URL url = new URL(urlStr);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int status = connection.getResponseCode();
+        if (status != 200) {
+            System.out.println("Erreur : code HTTP " + status);
+            return "";
+        }
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = in.readLine()) != null) {
+            response.append(line);
+        }
+        in.close();
+        connection.disconnect();
+
+        // Analyse du JSON pour extraire la chaîne "text"
+        JSONObject jsonResponse = new JSONObject(response.toString());
+        JSONArray candidates = jsonResponse.getJSONArray("candidates");
+        if (candidates.length() > 0) {
+            JSONObject content = candidates.getJSONObject(0).getJSONObject("content");
+            JSONArray parts = content.getJSONArray("parts");
+            if (parts.length() > 0) {
+                result = parts.getJSONObject(0).getString("text");
+            }
+        }
+
+        return result.trim();
+    }
+
+
 
 }

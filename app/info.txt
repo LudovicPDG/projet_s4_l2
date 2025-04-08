@@ -1,4 +1,1 @@
 Toutes nos classes avec Screen sont en fait des fragments.
-
-Gestion d'une barre de texte : Gérez les actions de l’utilisateur
-==============================

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <!-- Here you put the rest of your current view-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,11 +20,11 @@
         android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="60dp"
+        android:layout_margin="16dp"
         android:background="#bbbbbb"
         android:padding="30dp"
 
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         android:typeface="monospace"
         android:text="@string/character_creation"/>
@@ -26,8 +32,27 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Choisissez votre classe"
+        android:padding="3dp"
+
+        />
+
+    <EditText
+        android:id="@+id/characterClass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:minHeight="48dp"
+        android:hint="Mage, Guerrier, Elfe, Voleur"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
         android:text="@string/character_create_instruction"
-        android:padding="30dp"
+        android:padding="3dp"
 
         />
 
@@ -39,9 +64,6 @@
         android:layout_marginEnd="16dp"
         android:minHeight="48dp"
         android:hint="@string/character_prompt_hint"
-
-
-
         />
 
     <Button
@@ -56,6 +78,21 @@
 
         />
 
+    <TextView
+        android:id="@+id/textZone"
+        android:layout_width="380dp"
+        android:layout_height="260dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:background="#bbbbbb"
+        android:gravity="top|start"
+
+        android:padding="30dp"
+        android:scrollbars="vertical"
+        android:text="@string/lorem_ipsum"
+        android:textSize="20sp"
+         />
+
     <Button
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
@@ -63,10 +100,13 @@
         android:layout_margin="16dp"
         android:paddingHorizontal="24dp"
         android:textSize="14sp"
-        android:text="@string/explore_the_dungeon"
+        android:text="Commencer l'aventure"
 
 
         />
 
 
+
 </LinearLayout>
+
+</ScrollView>

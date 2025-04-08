@@ -50,9 +50,5 @@ public class GameFragment extends Fragment {
     private void setButtonsState(boolean state) {
         binding.actionButton1.setEnabled(state);
         binding.actionButton2.setEnabled(state);
-        binding.downButton.setEnabled(state);
-        binding.upButton.setEnabled(state);
-        binding.leftButton.setEnabled(state);
-        binding.rightButton.setEnabled(state);
     }
 }
