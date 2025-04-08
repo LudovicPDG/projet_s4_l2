@@ -4,15 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.boot.SpringApplication;
 
 import java.io.File;
@@ -31,88 +28,158 @@ public class AIGenerator {
     }
 
 
+//    @GetMapping("/generateRoomDescription")
+//    public ResponseEntity<Map<String, Object>> generateRoomDescription(@RequestParam String roomTitle, @RequestParam boolean isTrapped, @RequestParam Boolean finalRoom) {
+////        String prompt = "Génère une courte description immersive d'une salle de RPG solo. Adresse-toi directement au joueur. Le nom de la salle est "
+////                + roomTitle + (finalRoom ? "C'est la fin de l'histoire, fais triompher le joueur, et ne finit pas par une question" : "")
+////                + (isTrapped ? "Décris un obstacle (monstre, piège, ou obstacle dangereux) et deux choix d'action pour le joueur (1 et 2), un mauvais et un bon. Le joueur doit deviner lequel est le bon, ne lui donne pas la solution." +
+////                                "génère les choix dans un format comme 'Choix :\n1. Choix 1.\n2. Choix 2.' Indique lequel des deux choix est bon en ajoutant '(Bon)' ou '(Mauvais)' après chaque choix. Un choix doit impérativement être en début de ligne." : "");
+//
+//        String jsonToFill = "{\"roomTitle\": \"?\", " +
+//                            "\"roomDescription\": \"?\", " +
+//                            "\"choice1\": \"?\", " +
+//                            "\"choice2\": \"?\"" +
+//                            "\"correctChoice\": \"?\"" +
+//                            "\"consequence1\": \"?\"" +
+//                            "\"consequence2\": \"?\"}";
+//
+//        String prompt = "Remplit le fichier json suivant en remplaçant chaque '?' par une valeur selon les critères suivants : \n" +
+//                        "* roomTitle est le titre de la salle en un seul mot, choisis celui-ci dans un univers de fantasy. \n" +
+//                        "* roomDescription est une description immersive d'une salle de RPG solo dont le nom est roomTitle. Adresse-toi directement au joueur dans cette description." +
+//                        "Dans cette description, décrit un obstacle (monstre, piège, ou obstacle dangereux)" +
+//                        "* choice1 et choice2 sont deux actions possibles pour le joueur. " +
+//                        "Un seul de ces deux choix a une issue favorable. L'autre est un mauvais choix." +
+//                        "* correctChoice est le numéro du bon choix (1 ou 2)" +
+//                        "* consequence1 et consequence2 sont les descriptions des conséquences respectivement aux actions 1 et 2\n '" +
+//                        jsonToFill +"'";
+//
+//        // Création de la requête
+//        RestTemplate restTemplate = new RestTemplate();
+//        String url = GEMINI_API_URL + "?key=" + API_KEY;
+//        String requestBody = String.format("{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}", prompt);
+//
+//        System.out.println(requestBody);  // Log pour vérifier la requête envoyée
+//
+//        Map<String, Object> responseMap = new HashMap<>();
+//
+//        try {
+//            // Envoi de la requête à l'API
+//            String response = restTemplate.postForObject(url, requestBody, String.class);
+//
+//            // Vérification de la réponse
+//            if (response == null || response.isEmpty()) {
+//                throw new RuntimeException("La réponse de l'API est vide ou nulle");
+//            }
+//
+//            // Traitement de la réponse JSON
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            JsonNode rootNode = objectMapper.readTree(response);
+//
+//            // Extraction des données à partir de la réponse
+//            String roomTitleResponse = rootNode.path("roomTitle").asText();
+//            String roomDescription = rootNode.path("roomDescription").asText();
+//            String choice1 = rootNode.path("choice1").asText();
+//            String choice2 = rootNode.path("choice2").asText();
+//            String correctChoice = rootNode.path("correctChoice").asText();
+//            String consequence1 = rootNode.path("consequence1").asText();
+//            String consequence2 = rootNode.path("consequence2").asText();
+//
+//            // Remplissage du Map de réponse
+//            responseMap.put("roomTitle", roomTitleResponse);
+//            responseMap.put("roomDescription", roomDescription);
+//            responseMap.put("choice1", choice1);
+//            responseMap.put("choice2", choice2);
+//            responseMap.put("correctChoice", correctChoice);
+//            responseMap.put("consequence1", consequence1);
+//            responseMap.put("consequence2", consequence2);
+//
+//            return new ResponseEntity<>(responseMap, HttpStatus.OK);
+//
+//        } catch (Exception e) {
+//            responseMap.put("error", "Failed to generate room description: " + e.getMessage());
+//            return new ResponseEntity<>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
     @GetMapping("/generateRoomDescription")
-    public ResponseEntity<Map<String, Object>> generateRoomDescription(@RequestParam String roomTitle, @RequestParam boolean isTrapped, @RequestParam Boolean finalRoom) {
-        String prompt = "Génère une courte description immersive d'une salle de RPG solo. Adresse-toi directement au joueur. Le nom de la salle est "
-                + roomTitle + (finalRoom ? "C'est la fin de l'histoire, fais triompher le joueur, et ne finit pas par une question" : "")
-                + (isTrapped ? "Décris un obstacle (monstre, piège, ou obstacle dangereux) et deux choix d'action pour le joueur (1 et 2), un mauvais et un bon. Le joueur doit deviner lequel est le bon, ne lui donne pas la solution." +
-                                "génère les choix dans un format comme 'Choix :\n1. Choix 1.\n2. Choix 2.' Indique lequel des deux choix est bon en ajoutant '(Bon)' ou '(Mauvais)' après chaque choix. Un choix doit impérativement être en début de ligne." : "");
+    public ResponseEntity<Map<String, Object>> generateRoomDescription(@RequestParam String roomTitle, @RequestParam Boolean finalRoom, @RequestParam char inspirationLetter) {
+        // Construction dynamique du prompt avec les conditions isTrapped et finalRoom
+        String prompt = "Remplis le fichier JSON suivant en remplaçant chaque '?' par une valeur selon les critères suivants : \n" +
+                "* roomTitle est le titre de la salle en un seul mot, choisis celui-ci dans un univers de fantasy. roomTitle doit être un lieu surprenant, peu commun dans les jeux fantasy classiques, mais toujours crédible. roomTitle doit être un nom commun commençant par la lettre" + inspirationLetter + "\n" +
+                "* roomDescription est une description immersive d'une salle de RPG solo dont le nom est roomTitle. Adresse-toi directement au joueur dans cette description." +
+                "Dans cette description, décris un obstacle (monstre, piège, ou obstacle dangereux)\n" +
+                "* choice1 et choice2 sont deux actions possibles pour le joueur. Un seul de ces deux choix a une issue favorable. L'autre est un choix pénalisant, mais non mortel.\n" +
+                "* correctChoice est le numéro du bon choix (1 ou 2)\n" +
+                "* consequence1 et consequence2 sont les descriptions des conséquences respectivement aux actions 1 et 2. Les deux conséquences doivent finir par une sortie du joueur de la salle.\n\n" +
+                "{\"roomTitle\": \"?\", \"roomDescription\": \"?\", \"choice1\": \"?\", \"choice2\": \"?\", \"correctChoice\": \"?\", \"consequence1\": \"?\", \"consequence2\": \"?\"}";
 
+        // Vérification des paramètres spécifiques
+        if (finalRoom) {
+            prompt += "\nC'est la fin de l'histoire, fais triompher le joueur, et ne finis pas par une question.";
+        }
 
-
+        // Création de la requête
         RestTemplate restTemplate = new RestTemplate();
-
-        String requestBody = String.format("{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}", prompt);
         String url = GEMINI_API_URL + "?key=" + API_KEY;
 
-        System.out.println(requestBody);
+        // Le corps de la requête sera un JSON
+        Map<String, Object> body = new HashMap<>();
+        String finalPrompt = prompt;
+        body.put("contents", new Object[] {
+                new HashMap<String, Object>() {{
+                    put("parts", new Object[] {
+                            new HashMap<String, Object>() {{
+                                put("text", finalPrompt);
+                            }}
+                    });
+                }}
+        });
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+        // Map pour stocker la réponse
         Map<String, Object> responseMap = new HashMap<>();
 
         try {
-            String response = restTemplate.postForObject(url, requestBody, String.class);
+            // Envoi de la requête POST à l'API
+            String response = restTemplate.postForObject(url, entity, String.class);
 
+            System.out.println("response: " + response);
 
+            // Vérification de la réponse
             if (response == null || response.isEmpty()) {
                 throw new RuntimeException("La réponse de l'API est vide ou nulle");
             }
 
-            // Convertir la réponse JSON en Map
+            // Traitement de la réponse JSON
             ObjectMapper objectMapper = new ObjectMapper();
-
             JsonNode rootNode = objectMapper.readTree(response);
 
-            JsonNode textNode = rootNode.get("candidates").get(0).get("content").get("parts").get(0).get("text");
+            String textResponse = rootNode.get("candidates").get(0).get("content").get("parts").get(0).get("text").asText();
 
-            String text = textNode.asText();
+            String jsonContent = textResponse.replaceAll("(?s)```json\\s*(\\{.*?\\})\\s*```", "$1");
 
-            System.out.println("generatedText " + text);
+            JsonNode json = objectMapper.readTree(jsonContent);
 
 
-            String roomDescription = extractRoomDescription(text);
-
-            List<String> choices = extractChoices(text);
-
-            assert choices.size() == 2;
-            System.out.println("choices " + choices);
-            String correctChoice = extractCorrectChoice(text);
-
-            //Map<Integer, String> choiceConsequences = getChoiceConsequences(roomDescription, choices.get(0), choices.get(1), correctChoice);
-
-            responseMap.put("roomDescriptionFull", response);
-            responseMap.put("roomDescription", roomDescription);
-            responseMap.put("choices", choices);
-            responseMap.put("correctChoice", correctChoice);
-
+            // Remplissage de la Map de réponse
+            responseMap.put("roomTitle", json.path("roomTitle").asText());
+            responseMap.put("roomDescription", json.path("roomDescription").asText());
+            responseMap.put("choice1", json.path("choice1").asText());
+            responseMap.put("choice2", json.path("choice2").asText());
+            responseMap.put("correctChoice", json.path("correctChoice").asText());
+            responseMap.put("consequence1", json.path("consequence1").asText());
+            responseMap.put("consequence2", json.path("consequence2").asText());
 
             return new ResponseEntity<>(responseMap, HttpStatus.OK);
+
         } catch (Exception e) {
             responseMap.put("error", "Failed to generate room description: " + e.getMessage());
             return new ResponseEntity<>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    private String extractRoomDescription(String response) {
-        // On extrait uniquement la partie de la description de la salle.
-        return response.split("Choix")[0].trim();  // On suppose que "Choix" est le début des options d'action
-    }
-
-    // Méthode pour extraire les choix d'action de la réponse de Gemini
-    private List<String> extractChoices(String response) {
-        List<String> choices = new ArrayList<>();
-        String[] lines = response.split("\n");
-
-        System.out.println("extractChoices, lines " + Arrays.toString(lines));
-
-        for (String line : lines) {
-            if (line.startsWith("1.") || line.startsWith("2.")) {
-                // On enlève les parenthèses et tout ce qu'elles contiennent
-                String clean = line.replaceAll("\\(.*?\\)", "").trim();
-                choices.add(clean);
-            }
-        }
-
-        return choices;
     }
 
     private String extractCorrectChoice(String response) {
@@ -145,6 +212,39 @@ public class AIGenerator {
         }
 
         return "-1"; // Aucun bon choix trouvé
+    }
+
+    @GetMapping("getGoodChoiceConsequence")
+    public ResponseEntity<Map<Integer, String>> getGoodChoiceConsequence(@RequestParam String roomDescription, @RequestParam String choice) {
+        String prompt = "Voici la description d'une salle dans un jeu de rôle en solo :\n\n"
+                + "\"" + roomDescription + "\"\n\n"
+                + "Décris ce qu’il se passe pour le joueur après le choix suivant :\n"
+                + choice + ". Il doit se passer quelque chose de positif";
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = GEMINI_API_URL + "?key=" + API_KEY;
+        String requestBody = String.format("{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}", prompt);
+
+        try {
+            // Appel API pour générer le contenu
+            String response = restTemplate.postForObject(url, requestBody, String.class);
+            System.out.println("Response from API: " + response);
+
+            // Initialisation du map pour stocker les conséquences
+            Map<Integer, String> consequences = new HashMap<>();
+
+            // Extraction des conséquences pour les choix 1 et 2
+            consequences.put(1, extractConsequence(response, "1\\.", "2\\."));
+            consequences.put(2, extractConsequence(response, "2\\.", null));
+
+            // Retourner les conséquences dans une ResponseEntity avec statut OK
+            return new ResponseEntity<>(consequences, HttpStatus.OK);
+
+        } catch (Exception e) {
+            // En cas d'erreur, affichage du message et renvoi d'une réponse vide
+            System.err.println("Erreur lors de la génération des conséquences : " + e.getMessage());
+            return new ResponseEntity<>(Collections.emptyMap(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/getChoiceConsequences")
@@ -227,6 +327,38 @@ public class AIGenerator {
         } catch (Exception e) {
             System.err.println("Erreur dans extractConsequence : " + e.getMessage());
             return "";
+        }
+    }
+
+    @GetMapping("/generateBackstory")
+    public ResponseEntity<String> generateBackstory(@RequestParam String description) {
+        RestTemplate restTemplate = new RestTemplate();
+        String prompt = "Génère une courte histoire immersive expliquant le passé et les origines d'un personnage de jeu de role basé sur cette description : " + description;
+
+        String requestBody = String.format("{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}", prompt);
+        String url = GEMINI_API_URL + "?key=" + API_KEY;
+
+        try {
+            String response = restTemplate.postForObject(url, requestBody, String.class);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de la génération de la backstory : " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/generatePortrait")
+    public ResponseEntity<String> generatePortrait(@RequestParam String description, @RequestParam String characterClass) {
+        RestTemplate restTemplate = new RestTemplate();
+        String prompt = "Génère un portrait pour un personnage de jeu de rôle de classe " + characterClass + " avec cette description : " + description;
+
+        String requestBody = String.format("{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}", prompt);
+        String url = GEMINI_IMAGE_API_URL + "?key=" + API_KEY;
+
+        try {
+            String response = restTemplate.postForObject(url, requestBody, String.class);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de la génération du portrait : " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
