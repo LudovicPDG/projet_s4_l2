@@ -1,18 +1,19 @@
 package com.iarpg.backend.backend;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.boot.SpringApplication;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @RestController
@@ -29,16 +30,20 @@ public class AIGenerator {
 
 
     @GetMapping("/generateRoomDescription")
-    public ResponseEntity<Map<String, Object>> generateRoomDescription(@RequestParam String roomTitle, @RequestParam Boolean finalRoom, @RequestParam char inspirationLetter) {
+    public ResponseEntity<Map<String, Object>> generateRoomDescription(@RequestParam String characterClass, @RequestParam String roomTitle, @RequestParam String previousRoomTitle, @RequestParam Boolean finalRoom) {
         // Construction dynamique du prompt avec les conditions isTrapped et finalRoom
         String prompt = "Remplis le fichier JSON suivant en remplaçant chaque '?' par une valeur selon les critères suivants : \n" +
-                "* roomTitle est le titre de la salle en un seul mot, choisis celui-ci dans un univers de fantasy. roomTitle doit être un lieu surprenant, peu commun dans les jeux fantasy classiques, mais toujours crédible. roomTitle doit être un nom commun commençant par la lettre" + inspirationLetter + "\n" +
-                "* roomDescription est une description immersive d'une salle de RPG solo dont le nom est roomTitle. Adresse-toi directement au joueur dans cette description." +
+                "* roomTitle est égal au paramètre " + roomTitle + "\n" +
+                "* roomDescription est une description immersive d'une salle de RPG solo dont le nom est " + roomTitle +". Adresse-toi directement au joueur dans cette description. La classe du joueur est " + characterClass + ".\n" +
+                "Cette description doit commencer par décrire une transition entre la salle précédente de nom " + previousRoomTitle + " et la nouvelle salle. " +
                 "Dans cette description, décris un obstacle (monstre, piège, ou obstacle dangereux)\n" +
                 "* choice1 et choice2 sont deux actions possibles pour le joueur. Un seul de ces deux choix a une issue favorable. L'autre est un choix pénalisant, mais non mortel.\n" +
+                "La consequence positive doit aussi décrire l'obtention d'un item, défini par les champs itemName et itemDecription" +
+                "* itemName décrit le nom de l'item " +
+                "* itemDescription est une description de l'item sur une ligne" +
                 "* correctChoice est le numéro du bon choix (1 ou 2)\n" +
                 "* consequence1 et consequence2 sont les descriptions des conséquences respectivement aux actions 1 et 2. Les deux conséquences doivent finir par une sortie du joueur de la salle.\n\n" +
-                "{\"roomTitle\": \"?\", \"roomDescription\": \"?\", \"choice1\": \"?\", \"choice2\": \"?\", \"correctChoice\": \"?\", \"consequence1\": \"?\", \"consequence2\": \"?\"}";
+                "{\"roomTitle\": \"?\", \"roomDescription\": \"?\", \"choice1\": \"?\", \"choice2\": \"?\", \"correctChoice\": \"?\", \"consequence1\": \"?\", \"consequence2\": \"?\", \"itemName\" : \"?\", \"itemDescription\" : \"?\"}";
 
         // Vérification des paramètres spécifiques
         if (finalRoom) {
@@ -100,6 +105,8 @@ public class AIGenerator {
             responseMap.put("correctChoice", json.path("correctChoice").asText());
             responseMap.put("consequence1", json.path("consequence1").asText());
             responseMap.put("consequence2", json.path("consequence2").asText());
+            responseMap.put("itemName", json.path("itemName").asText());
+            responseMap.put("itemDescription", json.path("itemDescription").asText());
 
             return new ResponseEntity<>(responseMap, HttpStatus.OK);
 
@@ -126,19 +133,4 @@ public class AIGenerator {
         }
     }
 
-    @GetMapping("/generatePortrait")
-    public ResponseEntity<String> generatePortrait(@RequestParam String description, @RequestParam String characterClass) {
-        RestTemplate restTemplate = new RestTemplate();
-        String prompt = "Génère un portrait pour un personnage de jeu de rôle de classe " + characterClass + " avec cette description : " + description;
-
-        String requestBody = String.format("{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}", prompt);
-        String url = GEMINI_IMAGE_API_URL + "?key=" + API_KEY;
-
-        try {
-            String response = restTemplate.postForObject(url, requestBody, String.class);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Erreur lors de la génération du portrait : " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 }
