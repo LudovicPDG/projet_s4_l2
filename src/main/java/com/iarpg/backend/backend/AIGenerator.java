@@ -30,7 +30,7 @@ public class AIGenerator {
 
 
     @GetMapping("/generateRoomDescription")
-    public ResponseEntity<Map<String, Object>> generateRoomDescription(@RequestParam String characterClass, @RequestParam String roomTitle, @RequestParam String previousRoomTitle, @RequestParam Boolean finalRoom) {
+    public ResponseEntity<Map<String, Object>> generateRoomDescription(@RequestParam String characterClass ,@RequestParam String roomTitle, @RequestParam String previousRoomTitle, @RequestParam Boolean finalRoom) {
         // Construction dynamique du prompt avec les conditions isTrapped et finalRoom
         String prompt = "Remplis le fichier JSON suivant en remplaçant chaque '?' par une valeur selon les critères suivants : \n" +
                 "* roomTitle est égal au paramètre " + roomTitle + "\n" +
@@ -115,6 +115,53 @@ public class AIGenerator {
             return new ResponseEntity<>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/generateRoomTitles")
+    public ResponseEntity<List<String>> generateRoomTitles(@RequestBody(required = false) String theme) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = GEMINI_API_URL + "?key=" + API_KEY;
+
+        // Prompt
+        String prompt = "Génère une liste de 30 titres immersifs pour des salles dans un jeu de rôle fantasy. " +
+                "Chaque titre doit être court (3 à 5 mots), évocateur et unique. " +
+                "Formate-les sous forme d’un tableau JSON de chaînes de caractères." +
+                (theme != null && !theme.isEmpty() ? " Le thème général est : " + theme + "." : "");
+
+        // Corps de la requête
+        Map<String, Object> body = new HashMap<>();
+        body.put("contents", new Object[]{
+                new HashMap<String, Object>() {{
+                    put("parts", new Object[]{
+                            new HashMap<String, Object>() {{
+                                put("text", prompt);
+                            }}
+                    });
+                }}
+        });
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+        try {
+            String response = restTemplate.postForObject(url, entity, String.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode root = objectMapper.readTree(response);
+
+            String text = root.get("candidates").get(0).get("content").get("parts").get(0).get("text").asText();
+
+            // Extraction JSON brut d’un tableau
+            String jsonArray = text.replaceAll("(?s).*?(\\[.*?\\]).*", "$1");
+            List<String> titles = objectMapper.readValue(jsonArray, List.class);
+
+            return ResponseEntity.ok(titles);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonList("Erreur lors de la génération des roomTitles : " + e.getMessage()));
+        }
+    }
+
 
 
     @GetMapping("/generateBackstory")
