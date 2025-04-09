@@ -39,7 +39,7 @@ public class CharacterFragment extends Fragment {
 
     private String characterBackstory;
 
-    private final String theme = "Fantasy burlesque et amusante";
+    private String theme; //= "Fantasy burlesque et amusante";
 
     public static CharacterFragment newInstance() {
         CharacterFragment fragment = new CharacterFragment();
@@ -63,6 +63,11 @@ public class CharacterFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Bundle bundle = getArguments();
+
+        assert bundle != null;
+        this.theme = bundle.getString("theme");
         
         CharacterFragment self = this;
 
