@@ -24,39 +24,72 @@ public class AIIntegration {
     public static List<String> generateRoomTitles(String theme) throws IOException {
         List<String> result = new ArrayList<>();
 
-        // Construire l'URL avec le thème
         URL url = new URL("http://10.0.2.2:8080/AIGenerator/generateRoomTitles?theme=" + theme);
-
-        // Ouvrir la connexion HTTP
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
-        // Obtenir le code de réponse HTTP
         int status = connection.getResponseCode();
-
-        // Lire la réponse
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String inputLine;
         StringBuilder content = new StringBuilder();
+        String inputLine;
 
-        // Ajouter chaque ligne à la réponse (si c'est une réponse ligne par ligne)
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
-            // Si chaque titre de salle est séparé par une virgule (par exemple)
-            String[] titles = inputLine.split(",");
-            for (String title : titles) {
-                result.add(title.trim()); // Ajouter chaque titre à la liste
-            }
         }
         in.close();
         connection.disconnect();
 
-        // Afficher la réponse reçue (pour débogage)
+        // Nettoyer les crochets puis séparer sur les virgules
+        String raw = content.toString()
+                .replace("[", "")
+                .replace("]", "")
+                .replace("\"", ""); // Supprimer les guillemets
+
+        for (String title : raw.split(",")) {
+            result.add(title.trim());
+        }
+
         System.out.println("Statut : " + status);
         System.out.println("Réponse : " + content.toString());
 
         return result;
     }
+//    public static List<String> generateRoomTitles(String theme) throws IOException {
+//        List<String> result = new ArrayList<>();
+//
+//        // Construire l'URL avec le thème
+//        URL url = new URL("http://10.0.2.2:8080/AIGenerator/generateRoomTitles?theme=" + theme);
+//
+//        // Ouvrir la connexion HTTP
+//        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//        connection.setRequestMethod("GET");
+//
+//        // Obtenir le code de réponse HTTP
+//        int status = connection.getResponseCode();
+//
+//        // Lire la réponse
+//        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//        String inputLine;
+//        StringBuilder content = new StringBuilder();
+//
+//        // Ajouter chaque ligne à la réponse (si c'est une réponse ligne par ligne)
+//        while ((inputLine = in.readLine()) != null) {
+//            content.append(inputLine);
+//            // Si chaque titre de salle est séparé par une virgule (par exemple)
+//            String[] titles = inputLine.split(",");
+//            for (String title : titles) {
+//                result.add(title.trim()); // Ajouter chaque titre à la liste
+//            }
+//        }
+//        in.close();
+//        connection.disconnect();
+//
+//        // Afficher la réponse reçue (pour débogage)
+//        System.out.println("Statut : " + status);
+//        System.out.println("Réponse : " + content.toString());
+//
+//        return result;
+//    }
 
     public static Map<String, String> generateRoomDescription(String roomTitle, String previousRoomTitle, boolean finalRoom, String characterClass) throws IOException {
         Map<String, String> result = new HashMap<>();

@@ -1,4 +1,5 @@
 package com.iarpg.app.data;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Item {
@@ -6,10 +7,10 @@ public class Item {
     private String description;
     private Map<String, Integer> effectOnStats;
 
-    public Item(String name, String description, Map<String, Integer> effectOnStats) {
+    public Item(String name, String description) {
         this.name = name;
         this.description = description;
-        this.effectOnStats = effectOnStats;
+        this.effectOnStats = new HashMap<>();
     }
 
     public String getName() {

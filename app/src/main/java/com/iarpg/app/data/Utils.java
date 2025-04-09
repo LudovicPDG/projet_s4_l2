@@ -9,10 +9,11 @@ import com.iarpg.app.ui.CharacterFragment;
 
 public class Utils {
 
-    public static void fragmentTransition(FragmentManager fragmentManager, Fragment newFragment) {
+    public static void fragmentTransition(FragmentManager fragmentManager, Fragment newFragment, boolean canGoBack) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragment_container_view, newFragment);
-        fragmentTransaction.addToBackStack(null);
+        if (canGoBack) { fragmentTransaction.addToBackStack(null);}
+
         fragmentTransaction.commit();
     }
 }

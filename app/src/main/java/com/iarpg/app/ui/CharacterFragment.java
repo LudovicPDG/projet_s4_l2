@@ -74,7 +74,7 @@ public class CharacterFragment extends Fragment {
         binding.generateButton.setEnabled(false);
         //binding.startButton.setEnabled(false);
 
-        initStartButton();
+        initStartButton(self);
 
         initGenerateButton(self, service, handler);
 
@@ -125,15 +125,24 @@ public class CharacterFragment extends Fragment {
        });
     }
 
-    private void initStartButton() {
+    private void initStartButton(CharacterFragment self) {
 
         binding.startButton.setEnabled(false);
         binding.startButton.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+               binding.startButton.setEnabled(false);
+               binding.generateButton.setEnabled(false);
+
+               Bundle bundle = new Bundle();
+
+               bundle.putString("characterClass", binding.characterClass.getText().toString());
+               bundle.putString("theme", self.theme);
+
                 FragmentManager fragmentManager = getParentFragmentManager();
                 GameFragment gameFragment = GameFragment.newInstance();
-                Utils.fragmentTransition(fragmentManager, gameFragment);
+                gameFragment.setArguments(bundle);
+                Utils.fragmentTransition(fragmentManager, gameFragment, true);
            }
         }
         );

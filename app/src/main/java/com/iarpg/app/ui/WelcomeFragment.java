@@ -50,7 +50,7 @@ public class WelcomeFragment extends Fragment {
                 FragmentManager fragmentManager = getParentFragmentManager();
                 CharacterFragment characterFragment = CharacterFragment.newInstance();
 
-                Utils.fragmentTransition(fragmentManager, characterFragment);
+                Utils.fragmentTransition(fragmentManager, characterFragment, false);
             }
         });
     }
