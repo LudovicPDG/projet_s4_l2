@@ -91,12 +91,12 @@ public class AIIntegration {
 //        return result;
 //    }
 
-    public static Map<String, String> generateRoomDescription(String roomTitle, String previousRoomTitle, boolean finalRoom, String characterClass) throws IOException {
+    public static Map<String, String> generateRoomDescription(String roomTitle, String previousRoomTitle, boolean finalRoom, String characterClass, int characterHealthPoints) throws IOException {
         Map<String, String> result = new HashMap<>();
 
         URL url = new URL(String.format("http://10.0.2.2:8080/AIGenerator/" +
-                "generateRoomDescription?roomTitle=%s&previousRoomTitle=%s&finalRoom=%s&characterClass=%s",
-                roomTitle, previousRoomTitle, finalRoom, characterClass));
+                "generateRoomDescription?roomTitle=%s&previousRoomTitle=%s&finalRoom=%s&characterClass=%s&playerHealthPoints=%d",
+                roomTitle, previousRoomTitle, finalRoom, characterClass, characterHealthPoints));
 
         // Faire la requête
         // Ouvrir la connexion HTTP

@@ -37,11 +37,11 @@ public class Item {
         this.effectOnStats = effectOnStats;
     }
 
-    public void applyEffect(Character character) {
-        for (Map.Entry<String, Integer> effect : effectOnStats.entrySet()) {
-            String stat = effect.getKey();
-            Integer value = effect.getValue();
-            character.modifyStat(stat, value);
-        }
-    }
+//    public void applyEffect(PlayerCharacter character) {
+//        for (Map.Entry<String, Integer> effect : effectOnStats.entrySet()) {
+//            String stat = effect.getKey();
+//            Integer value = effect.getValue();
+//            character.modifyStat(stat, value);
+//        }
+//    }
 }

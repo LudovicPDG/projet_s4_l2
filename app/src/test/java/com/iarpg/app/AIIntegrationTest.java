@@ -26,9 +26,9 @@ public class AIIntegrationTest {
 
     @Test
     public void generateRoomDescriptionTest() throws IOException {
-        Map<String, String> result = AIIntegration.generateRoomDescription("Bosquet%20sacre", "Marais%20humides", false, "mage");
+        Map<String, String> result = AIIntegration.generateRoomDescription("Bosquet%20sacre", "Marais%20humides", false, "mage", 190);
 
-        assertEquals("Le résultat doit contenir 9 éléments", 9, result.size());
+        assertEquals("Le résultat doit contenir 10 éléments", 10, result.size());
 
         System.out.println(result.toString());
     }

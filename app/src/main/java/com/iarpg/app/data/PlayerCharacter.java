@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class Character {
+public class PlayerCharacter {
+    private final int maxHealthPoints;
     private String name;
     private Map<String, Integer> stats;
     private List<Item> inventory;
@@ -15,13 +16,13 @@ public class Character {
     private String characterClass;
 
 
-    public Character(String name, String characterClass, Map<String, Integer> stats, String backstory) {
-        this.name = name;
+    public PlayerCharacter(String characterClass, String backstory) {
         this.characterClass = characterClass;
-        this.stats = new HashMap<>(stats);
+        this.stats = new HashMap<>();
         this.inventory = new ArrayList<>();
         this.backstory = backstory;
-        this.healthPoints = 100; // par défaut
+        this.maxHealthPoints = 190; // par défaut
+        this.healthPoints = this.maxHealthPoints;
     }
 
     public void addItem(Item item) {
@@ -45,17 +46,17 @@ public class Character {
         return this.healthPoints;
     }
 
-    public void modifyStat(String statName, int amount) {
-        if (stats.containsKey(statName)) {
-            stats.put(statName, stats.get(statName) + amount);
-        } else {
-            stats.put(statName, amount); // Ajoute la statistique si elle n'existe pas encore
-        }
-
-        if (stats.get(statName) < 0) {
-            stats.put(statName, 0);
-        }
-    }
+//    public void modifyStat(String statName, int amount) {
+//        if (stats.containsKey(statName)) {
+//            stats.put(statName, stats.get(statName) + amount);
+//        } else {
+//            stats.put(statName, amount); // Ajoute la statistique si elle n'existe pas encore
+//        }
+//
+//        if (stats.get(statName) < 0) {
+//            stats.put(statName, 0);
+//        }
+//    }
 
     public String getName() {
         return name;
@@ -93,7 +94,11 @@ public class Character {
         return healthPoints;
     }
 
-    public void setHealthPoints(Integer healthPoints) {
+    public void setHealthPoints(int healthPoints) {
         this.healthPoints = healthPoints;
+    }
+
+    public int getMaxHealthPoints() {
+        return maxHealthPoints;
     }
 }

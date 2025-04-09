@@ -9,13 +9,20 @@ public class Room {
     private final Choice choice;
     private final Item item;
 
+    private final int nextHealthPoints;
 
 
-    public Room(String title, String description, Choice choice, Item item) {
+
+    public Room(String title, String description, Choice choice, Item item, int nextHealthPoints) {
         this.title = title;
         this.description = description;
         this.choice = choice;
         this.item = item;
+        this.nextHealthPoints = nextHealthPoints;
+    }
+
+    public int getNextHealthPoints() {
+        return nextHealthPoints;
     }
 
     public String getDescription() {

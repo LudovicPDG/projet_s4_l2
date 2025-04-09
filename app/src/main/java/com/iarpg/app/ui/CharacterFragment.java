@@ -137,6 +137,7 @@ public class CharacterFragment extends Fragment {
                Bundle bundle = new Bundle();
 
                bundle.putString("characterClass", binding.characterClass.getText().toString());
+               bundle.putString("characterBackstory", self.characterBackstory);
                bundle.putString("theme", self.theme);
 
                 FragmentManager fragmentManager = getParentFragmentManager();
