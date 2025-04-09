@@ -230,7 +230,7 @@ public class GameFragment extends Fragment {
                     int hp = i == 0 ? self.playerCharacter.getMaxHealthPoints() : rooms.get(i -1).getNextHealthPoints();
 
                     try {
-                        result = AIIntegration.generateRoomDescription(roomTitle, previousRoomTitle, false, self.characterClass, hp);
+                        result = AIIntegration.generateRoomDescription(roomTitle, previousRoomTitle, false, self.characterClass, hp, self.theme);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

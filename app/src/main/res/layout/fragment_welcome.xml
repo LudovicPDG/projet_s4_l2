@@ -38,7 +38,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:minHeight="48dp"
-        android:hint="Fantasy burlesque et amusante"
+        android:hint="Fantasy, Sci-fi, Halloween"
         />
 
 

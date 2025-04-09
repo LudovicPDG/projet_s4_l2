@@ -21,10 +21,12 @@ import java.util.Map;
 public class AIIntegration {
     /* Cette classe permet de faire des appels à l'api d'ia générative */
 
+    private static final String port = "10.0.2.2:8080";
+
     public static List<String> generateRoomTitles(String theme) throws IOException {
         List<String> result = new ArrayList<>();
 
-        URL url = new URL("http://10.0.2.2:8080/AIGenerator/generateRoomTitles?theme=" + theme);
+        URL url = new URL("http://" + port + "/AIGenerator/generateRoomTitles?theme=" + theme);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
@@ -54,49 +56,14 @@ public class AIIntegration {
 
         return result;
     }
-//    public static List<String> generateRoomTitles(String theme) throws IOException {
-//        List<String> result = new ArrayList<>();
-//
-//        // Construire l'URL avec le thème
-//        URL url = new URL("http://10.0.2.2:8080/AIGenerator/generateRoomTitles?theme=" + theme);
-//
-//        // Ouvrir la connexion HTTP
-//        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//        connection.setRequestMethod("GET");
-//
-//        // Obtenir le code de réponse HTTP
-//        int status = connection.getResponseCode();
-//
-//        // Lire la réponse
-//        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//        String inputLine;
-//        StringBuilder content = new StringBuilder();
-//
-//        // Ajouter chaque ligne à la réponse (si c'est une réponse ligne par ligne)
-//        while ((inputLine = in.readLine()) != null) {
-//            content.append(inputLine);
-//            // Si chaque titre de salle est séparé par une virgule (par exemple)
-//            String[] titles = inputLine.split(",");
-//            for (String title : titles) {
-//                result.add(title.trim()); // Ajouter chaque titre à la liste
-//            }
-//        }
-//        in.close();
-//        connection.disconnect();
-//
-//        // Afficher la réponse reçue (pour débogage)
-//        System.out.println("Statut : " + status);
-//        System.out.println("Réponse : " + content.toString());
-//
-//        return result;
-//    }
 
-    public static Map<String, String> generateRoomDescription(String roomTitle, String previousRoomTitle, boolean finalRoom, String characterClass, int characterHealthPoints) throws IOException {
+
+    public static Map<String, String> generateRoomDescription(String roomTitle, String previousRoomTitle, boolean finalRoom, String characterClass, int characterHealthPoints, String theme) throws IOException {
         Map<String, String> result = new HashMap<>();
 
-        URL url = new URL(String.format("http://10.0.2.2:8080/AIGenerator/" +
-                "generateRoomDescription?roomTitle=%s&previousRoomTitle=%s&finalRoom=%s&characterClass=%s&playerHealthPoints=%d",
-                roomTitle, previousRoomTitle, finalRoom, characterClass, characterHealthPoints));
+        URL url = new URL(String.format("http://" + port + "/AIGenerator/" +
+                "generateRoomDescription?roomTitle=%s&previousRoomTitle=%s&finalRoom=%s&characterClass=%s&playerHealthPoints=%d&theme=%s",
+                roomTitle, previousRoomTitle, finalRoom, characterClass, characterHealthPoints, theme));
 
         // Faire la requête
         // Ouvrir la connexion HTTP
@@ -150,7 +117,7 @@ public class AIIntegration {
         String encodedDescription = java.net.URLEncoder.encode(characterDescription, java.nio.charset.StandardCharsets.UTF_8).replace("+", "%20");
         String encodedTheme = java.net.URLEncoder.encode(theme, java.nio.charset.StandardCharsets.UTF_8).replace("+", "%20");
 
-        String urlStr = String.format("http://10.0.2.2:8080/AIGenerator/generateBackstory?characterClass=%s&description=%s&theme=%s",
+        String urlStr = String.format("http://" + port + "/AIGenerator/generateBackstory?characterClass=%s&description=%s&theme=%s",
                 encodedClass, encodedDescription, encodedTheme);
 
         System.out.println("L'url est : " + urlStr);

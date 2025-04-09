@@ -90,7 +90,7 @@ public class PlayerCharacter {
         this.backstory = backstory;
     }
 
-    public Integer getHealthPoints() {
+    public int getHealthPoints() {
         return healthPoints;
     }
 
