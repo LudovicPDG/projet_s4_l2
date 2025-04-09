@@ -10,11 +10,26 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/hp"
+        android:layout_width="380dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:background="#bbbbbb"
+        android:padding="5dp"
+
+        android:typeface="monospace"
+
+        android:textSize="24sp"
+        android:textAlignment="center"
+        android:text="PV : 190/190"/>
+
+    <TextView
         android:id="@+id/textZone"
         android:layout_width="380dp"
-        android:layout_height="540dp"
+        android:layout_height="500dp"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="20dp"
+        android:layout_margin="60dp"
         android:background="#bbbbbb"
         android:padding="30dp"
 

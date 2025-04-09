@@ -69,7 +69,8 @@ public class CharacterFragment extends Fragment {
         ExecutorService service = Executors.newSingleThreadExecutor();
 
         Handler handler = new Handler(Looper.getMainLooper());
-        
+
+        binding.textZone.setText("");
         binding.textZone.setMovementMethod(new android.text.method.ScrollingMovementMethod());
         binding.generateButton.setEnabled(false);
         //binding.startButton.setEnabled(false);

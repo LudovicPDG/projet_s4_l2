@@ -48,6 +48,7 @@ public class GameFragment extends Fragment {
     private List<Room> rooms;
 
     private PlayerCharacter playerCharacter;
+    private String waitText;
 
 
     public static GameFragment newInstance() {
@@ -88,8 +89,10 @@ public class GameFragment extends Fragment {
         this.theme = bundle.getString("theme");
 
 
+        waitText = "Les lutins préparent la partie.\nMerci de patienter.";
+        binding.textZone.setText(waitText);
 
-        binding.textZone.setText("Les lutins préparent la partie.\nMerci de patienter.");
+        this.updateHpText();
 
         this.generateRoomTitles(self, service, handler);
 
@@ -115,6 +118,11 @@ public class GameFragment extends Fragment {
                 binding.nextButton.setEnabled(false);
             }
         });
+    }
+
+    private void updateHpText() {
+        String text = String.format("PV : %d/%d", this.playerCharacter.getHealthPoints(), this.playerCharacter.getMaxHealthPoints());
+        binding.hp.setText(text);
     }
 
     private void goToNextRoom() {
@@ -211,6 +219,10 @@ public class GameFragment extends Fragment {
                 List<Room> rooms = new ArrayList<>();
                 String previousRoomTitle;
                 for (int i=0; i < 10; i++) {
+
+                    String textString = waitText + String.format(" (%d/10)", i + 1);
+                    binding.textZone.setText(textString);
+
                     String roomTitle = self.roomTitles.get(i);
                     Map<String, String> result;
 
@@ -268,6 +280,7 @@ public class GameFragment extends Fragment {
 
         if (! correctChoice.equals(String.valueOf(actionNumber))) {
             this.playerCharacter.setHealthPoints(this.rooms.get(currentRoomIndex).getNextHealthPoints());
+            this.updateHpText();
         }
 
 
